@@ -49,11 +49,22 @@ FACILITYMASK = {
 }
 
 
-def bit2string(number):
+def byte2string(byte):
+    '''
+    Convert syslog classification byte to facility and priority.
+    The first 5 bits are the facility
+    The last 3 bits are the priority
+
+    See pg9 http://www.syslog.cc/ietf/drafts/draft-ietf-syslog-protocol-23.txt
+    '''
     try:
-        return "%s.%s" % (FACILITYMASK[number >> 3],
-                          PRIMASK[number & LOG_PRIMASK])
-    except:
+        facility = FACILITYMASK[byte >> 3]
+        priority = PRIMASK[byte & LOG_PRIMASK]
+        return "%s.%s" % (facility, priority)
+
+    except Exception as err:
+        print "Unexpected facility or priority: %s.%s" % (facility, priority)
+        print err
         return "unknown.unknown"
 
 
@@ -61,10 +72,10 @@ class SyslogListener(object):
     def datagramReceived(self, data):
         """strip priority tag"""
         if data[2] == ">":
-            pri = bit2string(int(data[1]))
+            pri = byte2string(int(data[1]))
             msg = data[3:]
         elif data[3] == ">":
-            pri = bit2string(int(data[1:3]))
+            pri = byte2string(int(data[1:3]))
             msg = data[4:]
         else:
             pri = None
