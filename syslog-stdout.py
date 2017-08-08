@@ -10,43 +10,43 @@ import os
 bufsiz = 2048
 
 LOG_PRIMASK = 0x07
-PRIMASK = {
-    0: "emerg",
-    1: "alert",
-    2: "crit",
-    3: "err",
-    4: "warning",
-    5: "notice",
-    6: "info",
-    7: "debug"
-}
+PRIMASK = [
+    "emerg",
+    "alert",
+    "crit",
+    "err",
+    "warning",
+    "notice",
+    "info",
+    "debug"
+]
 
-FACILITYMASK = {
-    0: "kern",
-    1: "user",
-    2: "mail",
-    3: "daemon",
-    4: "auth",
-    5: "syslog",
-    6: "lpr",
-    7: "news",
-    8: "uucp",
-    9: "cron",
-    10: "authpriv",
-    11: "ftp",
-    12: "ntp",
-    13: "security",
-    14: "console",
-    15: "mark",
-    16: "local0",
-    17: "local1",
-    18: "local2",
-    19: "local3",
-    20: "local4",
-    21: "local5",
-    22: "local6",
-    23: "local7",
-}
+FACILITYMASK = [
+    "kern",
+    "user",
+    "mail",
+    "daemon",
+    "auth",
+    "syslog",
+    "lpr",
+    "news",
+    "uucp",
+    "cron",
+    "authpriv",
+    "ftp",
+    "ntp",
+    "security",
+    "console",
+    "mark",
+    "local0",
+    "local1",
+    "local2",
+    "local3",
+    "local4",
+    "local5",
+    "local6",
+    "local7"
+]
 
 
 def byte2string(byte):
