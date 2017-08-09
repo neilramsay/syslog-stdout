@@ -86,14 +86,14 @@ class SyslogListener(object):
     def listen(self):
         try:
             os.remove('/dev/log')
-        except:
+        except Exception:
             pass
         try:
             sock = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
             sock.bind("/dev/log")
             self.sock = sock
 
-        except:
+        except Exception:
             print "Socket error: (%s) %s " % (sys.exc_info()[1][0],
                                               sys.exc_info()[1][1])
             sys.exit(1)
@@ -111,12 +111,12 @@ class SyslogListener(object):
     def shutdown(self):
         try:
             self.sock.close()
-        except:
+        except Exception:
             pass
 
         try:
             os.remove('/dev/log')
-        except:
+        except Exception:
             pass
 
 
