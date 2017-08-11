@@ -1,7 +1,9 @@
 #!/usr/bin/python
 import sys
 import socket
+import signal
 import os
+from daemon import Daemon
 
 bufsiz = 2048
 
@@ -64,7 +66,7 @@ def byte2string(byte):
         return "unknown.unknown"
 
 
-class SyslogListener(object):
+class SyslogListener(Daemon):
     def datagramReceived(self, data):
         """strip priority tag"""
         if data[2] == ">":
@@ -79,15 +81,14 @@ class SyslogListener(object):
         msg = msg.strip()
         print "%s:%s" % (pri, msg)
 
-    def listen(self):
+    def run(self):
         try:
             os.remove('/dev/log')
         except Exception:
             pass
         try:
-            sock = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
-            sock.bind("/dev/log")
-            self.sock = sock
+            self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
+            self.sock.bind("/dev/log")
 
         except Exception:
             print "Socket error: (%s) %s " % (sys.exc_info()[1][0],
@@ -96,28 +97,23 @@ class SyslogListener(object):
 
         while 1:
             try:
-                data, addr = sock.recvfrom(bufsiz)
+                data, addr = self.sock.recvfrom(bufsiz)
                 self.datagramReceived(data)
-            except KeyboardInterrupt:
-                self.shutdown()
-                return
             except socket.error:
                 pass
 
-    def shutdown(self):
+    def terminate(self):
         try:
             self.sock.close()
         except Exception:
             pass
 
         try:
-            os.remove('/dev/log')
+            os.remove("/dev/log")
         except Exception:
             pass
 
 
 if __name__ == '__main__':
-    # disable output buffer
-    sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
-    lst = SyslogListener()
-    lst.listen()
+    syslog = SyslogListener('/tmp/syslog-stdout.pid', stdout='/dev/stdout')
+    syslog.start()
