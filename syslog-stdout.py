@@ -1,10 +1,6 @@
 #!/usr/bin/python
 import sys
 import socket
-import re
-import thread
-import time
-import datetime
 import os
 
 bufsiz = 2048
